@@ -4,7 +4,7 @@
       <h3>{{ header }}</h3>
       <p>{{ body }}</p>
     </div>
-    <span class="ns-close"></span>
+    <span v-on:click="dismiss" class="ns-close"></span>
   </div>
 </template>
 
@@ -14,7 +14,10 @@ export default {
   data () {
     return {
       body: 'Welcome to Your Vue.js App',
-      header: 'Hello header'
+      header: 'Hello header',
+      dismiss: function (event) {
+        debugger
+      }
     }
   }
 }
@@ -23,186 +26,165 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .ns-box {
-	position: fixed;
-	background: rgba(42,45,50,0.85);
-	padding: 22px;
-	line-height: 1.4;
-	z-index: 1000;
-	pointer-events: none;
-	color: rgba(250,251,255,0.95);
-	font-size: 90%;
-	font-family: 'Helvetica Neue', 'Segoe UI', Helvetica, Arial, sans-serif;
+    position: fixed;
+    background: rgba(42, 45, 50, 0.85);
+    padding: 22px;
+    line-height: 1.4;
+    z-index: 1000;
+    pointer-events: none;
+    color: rgba(250, 251, 255, 0.95);
+    font-size: 90%;
+    font-family: 'Helvetica Neue', 'Segoe UI', Helvetica, Arial, sans-serif;
 }
-
 .ns-box.ns-show {
-	pointer-events: auto;
+    pointer-events: auto;
 }
-
 .ns-box a {
-	color: inherit;
-	opacity: 0.7;
-	font-weight: 700;
+    color: inherit;
+    opacity: 0.7;
+    font-weight: 700;
 }
-
 .ns-box a:hover,
 .ns-box a:focus {
-	opacity: 1;
+    opacity: 1;
 }
-
 .ns-box p {
-	margin: 0;
+    margin: 0;
 }
-
 .ns-box.ns-show,
 .ns-box.ns-visible {
-	pointer-events: auto;
+    pointer-events: auto;
 }
-
 .ns-close {
-	width: 20px;
-	height: 20px;
-	position: absolute;
-	right: 4px;
-	top: 4px;
-	overflow: hidden;
-	text-indent: 100%;
-	cursor: pointer;
-	-webkit-backface-visibility: hidden;
-	backface-visibility: hidden;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    overflow: hidden;
+    text-indent: 100%;
+    cursor: pointer;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
-
-.ns-close:hover, 
+.ns-close:hover,
 .ns-close:focus {
-	outline: none;
+    outline: none;
 }
-
 .ns-close::before,
 .ns-close::after {
-	content: '';
-	position: absolute;
-	width: 3px;
-	height: 60%;
-	top: 50%;
-	left: 50%;
-	background: #6e6e6e;
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 60%;
+    top: 50%;
+    left: 50%;
+    background: #6e6e6e;
 }
-
 .ns-close:hover::before,
 .ns-close:hover::after {
-	background: #fff;
+    background: #fff;
 }
-
 .ns-close::before {
-	-webkit-transform: translate(-50%,-50%) rotate(45deg);
-	transform: translate(-50%,-50%) rotate(45deg);
+    -webkit-transform: translate(-50%, -50%) rotate(45deg);
+    transform: translate(-50%, -50%) rotate(45deg);
 }
-
 .ns-close::after {
-	-webkit-transform: translate(-50%,-50%) rotate(-45deg);
-	transform: translate(-50%,-50%) rotate(-45deg);
+    -webkit-transform: translate(-50%, -50%) rotate(-45deg);
+    transform: translate(-50%, -50%) rotate(-45deg);
 }
 /* Growl-style notifications */
+
 .ns-growl {
     top: 30px;
-      left: 30px;
-        max-width: 300px;
-          border-radius: 5px;
-
+    left: 30px;
+    max-width: 300px;
+    border-radius: 5px;
 }
-
 .ns-growl p {
-  margin: 0;
+    margin: 0;
     line-height: 1.3;
-
 }
-
 [class^="ns-effect-"].ns-growl.ns-hide,
-  [class*=" ns-effect-"].ns-growl.ns-hide {
-  -webkit-animation-direction: reverse;
+[class*=" ns-effect-"].ns-growl.ns-hide {
+    -webkit-animation-direction: reverse;
     animation-direction: reverse;
+}
+/* Individual effects */
+/* Scale */
 
-  }
-
-  /* Individual effects */
-
-  /* Scale */
 .ns-effect-scale {
-  background: #67c58f;
-    box-shadow: 0 25px 10px -15px rgba(0,0,0,0.05);
-
+    background: #67c58f;
+    box-shadow: 0 25px 10px -15px rgba(0, 0, 0, 0.05);
 }
-
 .ns-effect-scale a {
-  color: #1f8a4c;
-
+    color: #1f8a4c;
 }
-
 .ns-effect-scale a:hover,
-  .ns-effect-scale a:focus {
-  color: #fff;
-
-  }
-
-  .ns-effect-scale .ns-close::before,
-  .ns-effect-scale .ns-close::after {
-  background: #1f8a4c;
-
-  }
-
-  .ns-effect-scale .ns-close:hover::before,
-  .ns-effect-scale .ns-close:hover::after {
-  background: #fff;
-
-  }
-
-  .ns-effect-scale.ns-show,
-  .ns-effect-scale.ns-hide {
-  -webkit-animation-name: animScale;
+.ns-effect-scale a:focus {
+    color: #fff;
+}
+.ns-effect-scale .ns-close::before,
+.ns-effect-scale .ns-close::after {
+    background: #1f8a4c;
+}
+.ns-effect-scale .ns-close:hover::before,
+.ns-effect-scale .ns-close:hover::after {
+    background: #fff;
+}
+.ns-effect-scale.ns-show,
+.ns-effect-scale.ns-hide {
+    -webkit-animation-name: animScale;
     animation-name: animScale;
-      -webkit-animation-duration: 0.25s;
-        animation-duration: 0.25s;
-
-  }
-
+    -webkit-animation-duration: 0.25s;
+    animation-duration: 0.25s;
+}
 @-webkit-keyframes animScale {
-  0% { opacity: 0; -webkit-transform: translate3d(0,40px,0) scale3d(0.1,0.6,1);  }
-    100% { opacity: 1; -webkit-transform: translate3d(0,0,0) scale3d(1,1,1);  }
-
+    0% {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 40px, 0) scale3d(0.1, 0.6, 1);
+    }
+    100% {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+    }
 }
-
 @keyframes animScale {
-  0% { opacity: 0; -webkit-transform: translate3d(0,40px,0) scale3d(0.1,0.6,1);
-  transform: translate3d(0,40px,0) scale3d(0.1,0.6,1); }
-    100% { opacity: 1; -webkit-transform: translate3d(0,0,0) scale3d(1,1,1);
-    transform: translate3d(0,0,0) scale3d(1,1,1);  }
-
+    0% {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 40px, 0) scale3d(0.1, 0.6, 1);
+        transform: translate3d(0, 40px, 0) scale3d(0.1, 0.6, 1);
+    }
+    100% {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+    }
 }
-
 /* Slide */
-.ns-effect-slide {
-	background: rgba(65,95,118,0.8);
-	top: auto;
-	bottom: 30px;
-}
 
+.ns-effect-slide {
+    background: rgba(65, 95, 118, 0.8);
+    top: auto;
+    bottom: 30px;
+}
 .ns-effect-slide .ns-close::before,
 .ns-effect-slide .ns-close::after {
-	background: #333;
+    background: #333;
 }
-
 .ns-effect-slide .ns-close:hover::before,
 .ns-effect-slide .ns-close:hover::after {
-	background: #fff;
+    background: #fff;
+}
+.ns-effect-slide.ns-show {
+    -webkit-animation-name: animSlideElastic;
+    animation-name: animSlideElastic;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
 }
 
-.ns-effect-slide.ns-show {
-	-webkit-animation-name: animSlideElastic;
-	animation-name: animSlideElastic;
-	-webkit-animation-duration: 1s;
-	animation-duration: 1s;
-	-webkit-animation-timing-function: linear;
-	animation-timing-function: linear;
-}
 /* Generated with Bounce.js. Edit at http://goo.gl/akZHSq */
 
 @-webkit-keyframes animSlideElastic { 
@@ -334,20 +316,28 @@ export default {
 }
 
 .ns-effect-slide.ns-hide {
-	-webkit-animation-name: animSlide;
-	animation-name: animSlide;
-	-webkit-animation-duration: 0.25s;
-	animation-duration: 0.25s;
+    -webkit-animation-name: animSlide;
+    animation-name: animSlide;
+    -webkit-animation-duration: 0.25s;
+    animation-duration: 0.25s;
 }
-
 @-webkit-keyframes animSlide {
-	0% { -webkit-transform: translate3d(-30px,0,0) translate3d(-100%,0,0); }
-	100% { -webkit-transform: translate3d(0,0,0); }
+    0% {
+        -webkit-transform: translate3d(-30px, 0, 0) translate3d(-100%, 0, 0);
+    }
+    100% {
+        -webkit-transform: translate3d(0, 0, 0);
+    }
 }
-
 @keyframes animSlide {
-	0% { -webkit-transform: translate3d(-30px,0,0) translate3d(-100%,0,0); transform: translate3d(-30px,0,0) translate3d(-100%,0,0); }
-	100% { -webkit-transform: translate3d(0,0,0); transform: translate3d(0,0,0); }
-  }
+    0% {
+        -webkit-transform: translate3d(-30px, 0, 0) translate3d(-100%, 0, 0);
+        transform: translate3d(-30px, 0, 0) translate3d(-100%, 0, 0);
+    }
+    100% {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+}
 </style>
 
