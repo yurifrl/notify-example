@@ -1,7 +1,7 @@
-  /* jshint unused:false */
+/* eslint no-unused-vars: "error" */
+
 import Vue from 'vue'
 import Notify from 'src/components/Notify.vue'
-import expect from 'expect.js'
 
 // helper function that mounts and returns the rendered text
 const getRenderedText = function (Component, propsData) {
@@ -24,18 +24,17 @@ describe('Notify.vue', () => {
   //   //   .to.equal('Welcome to Your Vue.js App')
   // })
   it('should render correct contents', () => {
-    // const notes = [
-    //   {
-    //     header: 'Header lorem',
-    //     body: 'Body lorem',
-    //     duration: 1,
-    //     level: 'info'
-    //   }
-    // ]
-    expect(1).toBe(1)
+    const notes = [
+      {
+        header: 'Header lorem',
+        body: 'Body lorem',
+        duration: 1,
+        level: 'info'
+      }
+    ]
 
-    // expect(getRenderedText(Notify, {
-    //   notes: notes
-    // })).toBe('Hello')
+    expect(getRenderedText(Notify, {
+      notes: notes
+    })).to.equal('Header lorem Body lorem')
   })
 })
