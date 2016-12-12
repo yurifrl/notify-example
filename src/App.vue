@@ -1,20 +1,47 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <hello></hello>
-    <hello></hello>
-    <hello></hello>
-    <hello></hello>
+    <notify :notes="notes"></notify>
+    <form @submit.prevent="createNotification">
+      <input type="text" v-model="header">
+      <input type="text" v-model="body">
+      <input type="number" v-model.number="duration">
+      <select v-model="level">
+        <option value="warning">Warning</option>
+        <option value="info">Info</option>
+      </select>
+      <button type="submit">New Notification</button>
+    </form>
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
+import Notify from './components/Notify'
 
 export default {
   name: 'app',
   components: {
-    Hello
+    Notify
+  },
+  data () {
+    return {
+      notes: [],
+      header: 'Header lorem',
+      body: 'Body lorem',
+      duration: 1,
+      level: 'info'
+    }
+  },
+  methods: {
+    createNotification () {
+      const data = {
+        header: this.header,
+        body: this.body,
+        duration: this.duration,
+        level: this.level
+      }
+      this.notes.push(data)
+    }
   }
 }
 </script>
@@ -29,3 +56,4 @@ export default {
   margin-top: 60px;
 }
 </style>
+
