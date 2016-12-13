@@ -2,12 +2,6 @@ import Vue from 'vue'
 import Notify from 'src/components/Notify.vue'
 
 // helper function that mounts and returns the rendered text
-const textRendered = Vue => Component => (propsData) => {
-  const Ctor = Vue.extend(Component)
-  const vm = new Ctor({ propsData }).$mount()
-  return vm.$el.textContent
-}
-
 const vmBuilder = Vue => components => propsData => {
   return new Vue({
     template: '<div><notify :notes="notes"></notify></div>',
@@ -16,11 +10,9 @@ const vmBuilder = Vue => components => propsData => {
   })
 }
 
-const getRenderedText = textRendered(Vue)(Notify)
-
 const getVm = vmBuilder(Vue)({ notify: Notify })
 
-describe('Notify.vue', () => {
+describe('Notify.vue elements structure', () => {
   it('should render correct contents', () => {
     const notes = [
       {
@@ -61,3 +53,45 @@ describe('Notify.vue', () => {
     }, 300)
   })
 })
+
+// No selector
+describe('Notify.vue page content', () => {
+  it('should render correct contents', () => {
+    const notes = [
+      {
+        header: 'Header lorem',
+        body: 'Body lorem',
+        level: 'warning'
+      }
+    ]
+    const vm = getVm({ notes: notes }).$mount()
+
+    expect(vm.$el.textContent).to.equal('Header lorem Body lorem')
+  })
+
+  it('should validate that the info element leave the screen', done => {
+    const notes = [
+      {
+        header: 'header1',
+        body: 'body1',
+        level: 'info',
+        infoDuration: 1
+      },
+      {
+        header: 'header2',
+        body: 'body2',
+        level: 'error'
+      }
+    ]
+
+    const vm = getVm({ notes: notes }).$mount()
+
+    expect(vm.$el.textContent).to.equal('header2 body2header1 body1')
+
+    setTimeout(() => {
+      expect(vm.$el.textContent).to.equal('header2 body2')
+      done()
+    }, 300)
+  })
+})
+
