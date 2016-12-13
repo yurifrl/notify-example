@@ -51,7 +51,6 @@ export default {
         duration: this.duration,
         level: this.level
       }
-      this.header = null
       this.notes.push(data)
     }
   }

@@ -7,8 +7,8 @@
     <div v-show="active">
       <div v-for="(note, index) in parsedNotes" :class="['note', note.level]">
         <span class="close" @click="dismiss(index)">&times;</span>
-        <h3>{{ note.header }} </h3>
-        <p>{{ note.body }} indice: {{ index }}</p>
+        <h3>{{ note.header }}</h3>
+        <p>{{ note.body }}</p>
       </div>
     </div>
   </div>
@@ -17,9 +17,17 @@
 <script>
 export default {
   data () {
-    return { active: true }
+    return {
+      active: true,
+      interval: 0,
+      mappedNotes: []
+    }
   },
   props: {
+    baseMultiplier: {
+      type: Number,
+      default: 1000
+    },
     notes: {
       type: Array,
       required: true,
@@ -37,26 +45,31 @@ export default {
   computed: {
     parsedNotes () {
       this.active = true
-
-      return this.notes.map((note, index) => {
-        note.expires = Date.now() + note.duration
-        return note
-      })
+      return this.notes.reverse()
     }
   },
   watch: {
     notes (value) {
       this.$el.scrollTop = 0
+      this.mappedNotes = []
+      this.notes.forEach((note, index) => {
+        if (note.level !== 'info') { return }
+        this.mappedNotes.push({
+          id: index,
+          expires: Date.now() + note.duration * this.baseMultiplier
+        })
+      })
     }
   },
   mounted () {
-    this.$nextTick(() => {
-      this.notes.forEach((note, index) => {
-        if (note.duration > Date.now) {
-          this.dismiss(index)
-        }
+    this.interval = setInterval(() => {
+      this.mappedNotes.forEach((note, index) => {
+        if (note.expires < Date.now()) { this.dismiss(note.id) }
       })
-    })
+    }, 1000)
+  },
+  beforeDestroy () {
+    clearInterval(this.interval)
   }
 }
 </script>
