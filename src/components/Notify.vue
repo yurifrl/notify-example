@@ -6,7 +6,7 @@
     </div>
     <div v-show="active">
       <div v-for="(note, index) in parsedNotes" :class="['note', note.level]">
-        <span class="close" @click="dismiss(note)">&times;</span>
+        <span class="close" @click="dismiss(index)">&times;</span>
         <h3>{{ note.header }} </h3>
         <p>{{ note.body }} indice: {{ index }}</p>
       </div>
@@ -15,34 +15,6 @@
 </template>
 
 <script>
-const scheduledRemoval = duration => remove => index => {
-  return setTimeout(() => remove(index), duration * 100)
-}
-
-const clearSetTimeout = duration => timer => index => {
-  return clearTimeout(timer)
-}
-
-const onCreateActions = {
-  warning: () => () => () => { },
-  error: () => () => () => { },
-  info: scheduledRemoval
-}
-
-const onDestroyActions = {
-  warning: () => () => () => console.log('warning destroyed'),
-  error: () => () => () => console.log('error destroyed'),
-  info: () => () => () => clearSetTimeout
-}
-
-const asyncActions = actions =>
-                     note =>
-                     action =>
-                     index => actions[note.level](note.duration)(action)(index)
-
-const onCreate = asyncActions(onCreateActions)
-const onDestroy = asyncActions(onDestroyActions)
-
 export default {
   data () {
     return { active: true }
@@ -59,15 +31,7 @@ export default {
       this.active = !this.active
     },
     dismiss (index) {
-      const current = this.notes.reverse()[index]
-      current.onDestroy(current.onCreate)(index)
-
-      console.log(index)
-      console.log(current.header)
-
-      console.log(this.notes.reverse().map((note, index) => { return `${note.header} index: ${index}` }))
-      console.log(this.notes.reverse().splice(index, 1))
-      console.log(this.notes.reverse().map((note, index) => { return `${note.header} index: ${index}` }))
+      this.notes.splice(index, 1)
     }
   },
   computed: {
@@ -75,17 +39,24 @@ export default {
       this.active = true
 
       return this.notes.map((note, index) => {
-        console.log(this.notes.reverse().map((note, index) => { return `onCreate> ${note.header} index: ${index}` }))
-        note.onCreate = onCreate(note)(this.dismiss)(index)
-        note.onDestroy = onDestroy(note)
+        note.expires = Date.now() + note.duration
         return note
-      }).reverse()
+      })
     }
   },
   watch: {
     notes (value) {
       this.$el.scrollTop = 0
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.notes.forEach((note, index) => {
+        if (note.duration > Date.now) {
+          this.dismiss(index)
+        }
+      })
+    })
   }
 }
 </script>
