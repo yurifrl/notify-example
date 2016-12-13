@@ -17,7 +17,7 @@
         </select>
       </div>
       <div class="form-item">
-        <input type="number" v-if="level === 'info'" v-model.number="infoDuration">
+        <input type="number" v-if="level === 'info'" v-model.number="duration">
       </div>
       <div class="form-item">
         <button class="btn" type="submit">New Notification</button>
@@ -39,7 +39,7 @@ export default {
       notes: [],
       header: 'Header lorem',
       body: 'Body lorem',
-      infoDuration: 90,
+      duration: 90,
       level: 'warning'
     }
   },
@@ -48,10 +48,11 @@ export default {
       const data = {
         header: this.header,
         body: this.body,
-        infoDuration: this.infoDuration,
+        duration: this.duration,
         level: this.level
       }
       this.notes.push(data)
+      this.header = null
     }
   }
 }

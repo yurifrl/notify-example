@@ -2,36 +2,47 @@
   <div class="notifications">
     <div @click="toggle" class="notification-icon">
       <svg viewBox="0 0 18 21"><path d="M7.01,19.01C7.01,20.11,7.9,21,9,21s1.99-0.89,1.99-1.99H7.01z M15.88,14.82V9c0-3.25-2.25-5.97-5.29-6.69V1.59 C10.59,0.71,9.88,0,9,0S7.41,0.71,7.41,1.59v0.72C4.37,3.03,2.12,5.75,2.12,9v5.82L0,16.94V18h18v-1.06L15.88,14.82z"/></svg>
-      <div class="notifications-number" :class="{'active' : reverseNotes.length > 0 }">{{ reverseNotes.length }}</div>
+      <div class="notifications-number" :class="{'active' : parsedNotes.length > 0 }">{{ parsedNotes.length }}</div>
     </div>
     <div v-show="active">
-      <div v-for="(note, index) in reverseNotes" :class="['note', note.level]">
-        <span class="close" @click="dismiss(index)">&times;</span>
-        <h3>{{ note.header }} {{ index }}</h3>
-        <p>{{ note.body }}</p>
+      <div v-for="(note, index) in parsedNotes" :class="['note', note.level]">
+        <span class="close" @click="dismiss(note)">&times;</span>
+        <h3>{{ note.header }} </h3>
+        <p>{{ note.body }} indice: {{ index }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-const timedAction = duration => index => cb => {
-  return setTimeout(() => cb(index), duration * 100)
+const scheduledRemoval = duration => remove => index => {
+  return setTimeout(() => remove(index), duration * 100)
+}
+
+const clearSetTimeout = duration => timer => index => {
+  return clearTimeout(timer)
 }
 
 const onCreateActions = {
   warning: () => () => () => { },
   error: () => () => () => { },
-  info: timedAction
+  info: scheduledRemoval
+}
+
+const onDestroyActions = {
+  warning: () => () => () => console.log('warning destroyed'),
+  error: () => () => () => console.log('error destroyed'),
+  info: () => () => () => clearSetTimeout
 }
 
 const asyncActions = actions =>
+                     note =>
                      action =>
-                     duration =>
-                     index =>
-                     cb => actions[action](duration)(index)(cb)
+                     index => actions[note.level](note.duration)(action)(index)
 
-const createAsyncAction = asyncActions(onCreateActions)
+const onCreate = asyncActions(onCreateActions)
+const onDestroy = asyncActions(onDestroyActions)
+
 export default {
   data () {
     return { active: true }
@@ -48,10 +59,15 @@ export default {
       this.active = !this.active
     },
     dismiss (index) {
-      /* clearTimeout(this.reverseNotes[index].timer) */
-      clearTimeout(this.reverseNotes[index].timer(this.dismiss))
-      console.log(this.reverseNotes)
-      this.reverseNotes[index].splice(index, 1)
+      const current = this.notes.reverse()[index]
+      current.onDestroy(current.onCreate)(index)
+
+      console.log(index)
+      console.log(current.header)
+
+      console.log(this.notes.reverse().map((note, index) => { return `${note.header} index: ${index}` }))
+      console.log(this.notes.reverse().splice(index, 1))
+      console.log(this.notes.reverse().map((note, index) => { return `${note.header} index: ${index}` }))
     }
   },
   computed: {
@@ -59,13 +75,11 @@ export default {
       this.active = true
 
       return this.notes.map((note, index) => {
-        note.timer = createAsyncAction(note.level)(note.infoDuration)(index)
-        note.timer(this.dismiss)
+        console.log(this.notes.reverse().map((note, index) => { return `onCreate> ${note.header} index: ${index}` }))
+        note.onCreate = onCreate(note)(this.dismiss)(index)
+        note.onDestroy = onDestroy(note)
         return note
-      })
-    },
-    reverseNotes () {
-      return this.parsedNotes.reverse()
+      }).reverse()
     }
   },
   watch: {
