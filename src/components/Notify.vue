@@ -21,7 +21,8 @@ export default {
   props: {
     notes: {
       type: Array,
-      required: true
+      required: true,
+      default: []
     }
   },
   methods: {
@@ -37,7 +38,7 @@ export default {
         if (note.level === 'info') {
           note.timer = setTimeout(() => {
             this.dismiss(index)
-          }, duration * 1000)
+          }, duration * 100)
         }
 
         return note
