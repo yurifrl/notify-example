@@ -1,14 +1,14 @@
 <template>
   <div class="notifications">
-    <div class="notification-icon">
+    <div @click="toggle" class="notification-icon">
       {{ filteredNotes.length }}
       <svg viewBox="0 0 18 21"><path d="M7.01,19.01C7.01,20.11,7.9,21,9,21s1.99-0.89,1.99-1.99H7.01z M15.88,14.82V9c0-3.25-2.25-5.97-5.29-6.69V1.59 C10.59,0.71,9.88,0,9,0S7.41,0.71,7.41,1.59v0.72C4.37,3.03,2.12,5.75,2.12,9v5.82L0,16.94V18h18v-1.06L15.88,14.82z"/></svg>
     </div>
-    <div v-for="(note, index) in filteredNotes">
-      <div :class="['note', note.level]">
-        <h3>{{ note.header }}</h3>
-        <p>{{ note.body }}</p>
-        <span class="close" @click="dismiss(index)">&times;</span>
+    <div v-show="active">
+      <div v-for="(note, index) in filteredNotes" :class="['note', note.level]">
+          <h3>{{ note.header }}</h3>
+          <p>{{ note.body }}</p>
+          <span class="close" @click="dismiss(index)">&times;</span>
       </div>
     </div>
   </div>
@@ -19,6 +19,9 @@
 // TODO: Duration defined by level
 // TODO: Created visible canvas
 export default {
+  data () {
+    return { active: true }
+  },
   props: {
     notes: {
       type: Array,
@@ -27,6 +30,9 @@ export default {
     }
   },
   methods: {
+    toggle () {
+      this.active = !this.active
+    },
     dismiss (index) {
       clearTimeout(this.filteredNotes[index].timer)
       this.notes.splice(index, 1)
@@ -35,7 +41,11 @@ export default {
   computed: {
     filteredNotes () {
       return this.notes.reverse().map((note, index) => {
-        const duration = note.infoDuration || 9
+        // Active
+        this.active = true
+
+        // Level
+        const duration = note.infoDuration || 90
         if (note.level === 'info') {
           note.timer = setTimeout(() => {
             this.dismiss(index)
