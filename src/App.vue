@@ -5,10 +5,11 @@
     <form @submit.prevent="createNotification">
       <input type="text" v-model="header">
       <input type="text" v-model="body">
-      <input type="number" v-model.number="duration">
+      <input type="number" v-model.number="infoDuration">
       <select v-model="level">
-        <option value="warning">Warning</option>
         <option value="info">Info</option>
+        <option value="warning">Warning</option>
+        <option value="error">Error</option>
       </select>
       <button type="submit">New Notification</button>
     </form>
@@ -28,7 +29,7 @@ export default {
       notes: [],
       header: 'Header lorem',
       body: 'Body lorem',
-      duration: 1,
+      infoDuration: 1,
       level: 'info'
     }
   },
@@ -37,7 +38,7 @@ export default {
       const data = {
         header: this.header,
         body: this.body,
-        duration: this.duration,
+        infoDuration: this.infoDuration,
         level: this.level
       }
       this.notes.push(data)

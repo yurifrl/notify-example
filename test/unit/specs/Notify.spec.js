@@ -11,24 +11,59 @@ const getRenderedText = function (Component, propsData) {
 }
 
 describe('Notify.vue', () => {
-  // it('should render correct contents', () => {
-  //   const vm = new Vue({
-  //     el: document.createElement('div'),
-  //     render: (h) => h(Notify)
-  //   })
+  it('should throw a resonable error if initialized wrong', () => {
+    const vm = new Vue({
+      template: '<div><notify></notify></div>',
+      components: {
+        notify: Notify
+      }
+    }).$mount()
 
-  //   console.log(vm.$el.querySelector('.notifications').textContent)
-  //   expect(vm.$el.querySelector('.notifications').textContent)
-  //     .to.equal('Welcome to Your Vue.js App')
-  //   // expect(vm.$el.querySelector('.note h3').textContent)
-  //   //   .to.equal('Welcome to Your Vue.js App')
-  // })
+  })
+
+  it('should render correct contents', () => {
+    // const vm = new Vue({
+    //   template: '<div><notify></notify></div>',
+    //   components: {
+    //     notify: Notify
+    //   }
+    // }).$mount()
+
+    // const vm = new Vue({
+    //   el: document.createElement('div'),
+    //   render: (h) => h(Notify)
+    // })
+
+    // console.log(vm.$el.querySelector('.notifications').textContent)
+    // expect(vm.$el.querySelector('.notifications').textContent)
+    //   .to.equal('Welcome to Your Vue.js App')
+
+    // // expect(vm.$el.querySelector('.note h3').textContent)
+    // //   .to.equal('Welcome to Your Vue.js App')
+
+    // const duration = 1
+    // const notes = [
+    //   {
+    //     header: 'Hello lorem',
+    //     body: 'How you lorem?',
+    //     level: 'info',
+    //     infoDuration: duration
+    //   }
+    // ]
+    // const testDismiss = setTimeout(() => {
+    //   expect(getRenderedText(Notify, {
+    //     notes: notes
+    //   })).to.equal('Hello lorem How you lorem?')
+    // }, 7000)
+
+    // clearTimeout(testDismiss)
+  })
+
   it('should render correct contents', () => {
     const notes = [
       {
         header: 'Header lorem',
         body: 'Body lorem',
-        duration: 1,
         level: 'info'
       }
     ]

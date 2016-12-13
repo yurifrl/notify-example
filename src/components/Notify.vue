@@ -10,11 +10,26 @@
 </template>
 
 <script>
+// TODO: Limit qtd of showing notes
+// TODO: Duration defined by level
+// TODO: Created visible canvas
+/* import Schema from 'js-schema' */
+/* const Note = Schema({ */
+/*   header: String.of(2, ''), */
+/*   body: String.of(2, ''), */
+/*   infoDuration: Number.min(1).below(999), */
+/*   level: Array.like(['info', 'error', 'warning']) */
+/* }) */
+
 export default {
-  name: 'hello',
   props: {
     notes: {
-      type: Array
+      type: Array,
+      required: true
+      /* validator: function (value) { */
+      /*   /1* return Note(value[0]) *1/ */
+      /*   /1* return false *1/ */
+      /* } */
     }
   },
   methods: {
@@ -25,11 +40,14 @@ export default {
   },
   computed: {
     filteredNotes () {
-      // TODO: Limit qtd of showing notes
-      // TODO: Duration defined by level
-      // TODO: Created visible canvas
       return this.notes.map((note, index) => {
-        note.timer = setTimeout(() => this.dismiss(index), note.duration * 1000)
+        const duration = note.infoDuration || 9
+        if (note.level === 'info') {
+          note.timer = setTimeout(() => {
+            this.dismiss(index)
+          }, duration * 1000)
+        }
+
         return note
       })
     }
