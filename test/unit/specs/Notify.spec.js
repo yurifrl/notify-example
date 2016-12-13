@@ -2,11 +2,23 @@ import Vue from 'vue'
 import Notify from 'src/components/Notify.vue'
 
 // helper function that mounts and returns the rendered text
-const getRenderedText = function (Component, propsData) {
+const textRendered = Vue => Component => (propsData) => {
   const Ctor = Vue.extend(Component)
   const vm = new Ctor({ propsData }).$mount()
   return vm.$el.textContent
 }
+
+const vmBuilder = Vue => components => propsData => {
+  return new Vue({
+    template: '<div><notify :notes="notes"></notify></div>',
+    data: function () { return propsData },
+    components: components
+  })
+}
+
+const getRenderedText = textRendered(Vue)(Notify)
+
+const getVm = vmBuilder(Vue)({ notify: Notify })
 
 describe('Notify.vue', () => {
   it('should render correct contents', () => {
@@ -14,13 +26,13 @@ describe('Notify.vue', () => {
       {
         header: 'Header lorem',
         body: 'Body lorem',
-        level: 'info'
+        level: 'warning'
       }
     ]
+    const vm = getVm({ notes: notes }).$mount()
 
-    expect(getRenderedText(Notify, {
-      notes: notes
-    })).to.equal('Header lorem Body lorem')
+    expect(vm.$el.querySelector('.notifications .warning h3').textContent).to.equal('Header lorem')
+    expect(vm.$el.querySelector('.notifications .warning p').textContent).to.equal('Body lorem')
   })
 
   it('should validate that the info element leave the screen', done => {
@@ -38,16 +50,13 @@ describe('Notify.vue', () => {
       }
     ]
 
-    const vm = new Vue({
-      template: '<div><notify :notes="notes"></notify></div>',
-      data: function () { return { notes: notes } },
-      components: { notify: Notify }
-    }).$mount()
+    const vm = getVm({ notes: notes }).$mount()
 
-    expect(vm.$el.textContent).to.equal('header2 body2header1 body1')
+    expect(vm.$el.querySelector('.notifications .error h3').textContent).to.equal('header2')
+    expect(vm.$el.querySelector('.notifications .info h3').textContent).to.equal('header1')
 
     setTimeout(() => {
-      expect(vm.$el.textContent).to.equal('header2 body2')
+      expect(vm.$el.querySelector('.notifications .info h3')).to.equal(null)
       done()
     }, 300)
   })

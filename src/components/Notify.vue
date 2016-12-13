@@ -6,18 +6,15 @@
     </div>
     <div v-show="active">
       <div v-for="(note, index) in filteredNotes" :class="['note', note.level]">
-          <h3>{{ note.header }}</h3>
-          <p>{{ note.body }}</p>
-          <span class="close" @click="dismiss(index)">&times;</span>
+        <span class="close" @click="dismiss(index)">&times;</span>
+        <h3>{{ note.header }}</h3>
+        <p>{{ note.body }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// TODO: Limit qtd of showing notes
-// TODO: Duration defined by level
-// TODO: Created visible canvas
 export default {
   data () {
     return { active: true }
