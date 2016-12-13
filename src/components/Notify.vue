@@ -2,22 +2,36 @@
   <div class="notifications">
     <div @click="toggle" class="notification-icon">
       <svg viewBox="0 0 18 21"><path d="M7.01,19.01C7.01,20.11,7.9,21,9,21s1.99-0.89,1.99-1.99H7.01z M15.88,14.82V9c0-3.25-2.25-5.97-5.29-6.69V1.59 C10.59,0.71,9.88,0,9,0S7.41,0.71,7.41,1.59v0.72C4.37,3.03,2.12,5.75,2.12,9v5.82L0,16.94V18h18v-1.06L15.88,14.82z"/></svg>
-      <div class="notifications-number" :class="{'active' : filteredNotes.length > 0 }">{{ filteredNotes.length }}</div>
+      <div class="notifications-number" :class="{'active' : reverseNotes.length > 0 }">{{ reverseNotes.length }}</div>
     </div>
     <div v-show="active">
-      <div v-for="(note, index) in filteredNotes" :class="['note', note.level]">
-        <h3>{{ note.header }}</h3>
-        <p>{{ note.body }}</p>
+      <div v-for="(note, index) in reverseNotes" :class="['note', note.level]">
         <span class="close" @click="dismiss(index)">&times;</span>
+        <h3>{{ note.header }} {{ index }}</h3>
+        <p>{{ note.body }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// TODO: Limit qtd of showing notes
-// TODO: Duration defined by level
-// TODO: Created visible canvas
+const timedAction = duration => index => cb => {
+  return setTimeout(() => cb(index), duration * 100)
+}
+
+const onCreateActions = {
+  warning: () => () => () => { },
+  error: () => () => () => { },
+  info: timedAction
+}
+
+const asyncActions = actions =>
+                     action =>
+                     duration =>
+                     index =>
+                     cb => actions[action](duration)(index)(cb)
+
+const createAsyncAction = asyncActions(onCreateActions)
 export default {
   data () {
     return { active: true }
@@ -34,30 +48,28 @@ export default {
       this.active = !this.active
     },
     dismiss (index) {
-      clearTimeout(this.filteredNotes[index].timer)
-      this.notes.splice(index, 1)
+      /* clearTimeout(this.reverseNotes[index].timer) */
+      clearTimeout(this.reverseNotes[index].timer(this.dismiss))
+      console.log(this.reverseNotes)
+      this.reverseNotes[index].splice(index, 1)
     }
   },
   computed: {
-    filteredNotes () {
-      return this.notes.reverse().map((note, index) => {
-        // Active
-        this.active = true
+    parsedNotes () {
+      this.active = true
 
-        // Level
-        const duration = note.infoDuration || 90
-        if (note.level === 'info') {
-          note.timer = setTimeout(() => {
-            this.dismiss(index)
-          }, duration * 100)
-        }
-
+      return this.notes.map((note, index) => {
+        note.timer = createAsyncAction(note.level)(note.infoDuration)(index)
+        note.timer(this.dismiss)
         return note
       })
+    },
+    reverseNotes () {
+      return this.parsedNotes.reverse()
     }
   },
   watch: {
-    notes: function (val) {
+    notes (value) {
       this.$el.scrollTop = 0
     }
   }
@@ -75,7 +87,7 @@ export default {
     top:   0;
     right: 10px;
     overflow: auto;
-    max-height: 50%;
+    max-height: 70%;
     box-shadow: 0 0 10px rgba(0,0,0,.20);
     border-bottom-left-radius:  4px;
     border-bottom-right-radius: 4px;
@@ -84,6 +96,7 @@ export default {
     z-index: 1;
 
     .note {
+      border: 1px solid @border_color;
       width: 200px;
       background-color: #ededed;
       border-radius: 4px;
@@ -93,6 +106,8 @@ export default {
       position: relative;
       opacity: .8;
       transition: opacity .2s ease-in-out;
+      cursor: pointer;
+      color: red;
 
       &:hover {
         opacity: 1;
